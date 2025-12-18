@@ -134,70 +134,61 @@ function main {
     source "$s"
   done
 
-  # Confirmed start 
+
   f_pre
+  f_kernel
+  f_firewall
+  f_disablenet
+  f_disablefs
+  f_disablemod
+  f_systemdconf
+  f_resolvedconf
+  f_logindconf
   f_journalctl
   f_timesyncd
-  f_resolvedconf
-  f_adduser
-  f_rootaccess
-  f_coredump
+  f_fstab
+  f_prelink
+  f_aptget_configure
   f_aptget
-  f_postfix
-  f_apport
-  f_motdnews
   f_hosts
   f_issue
   f_sudo
   f_logindefs
-  f_prelink
-  f_firewall
+  f_sysctl
+  f_limitsconf
+  f_adduser
+  f_rootaccess
+  f_package_install
+  f_psad
+  f_coredump
+  f_usbguard
+  f_postfix
+  f_apport
+  f_motdnews
+  f_rkhunter
   f_sshconfig
   f_sshdconfig
+  f_password
   f_cron
+  f_ctrlaltdel
+  f_auditd
+  f_aide
   f_rhosts
+  f_users
+  f_lockroot
+  f_package_remove
+  f_suid
+  f_restrictcompilers
   f_umask
   f_path
+  f_aa_enforce
+  f_aide_post
+  f_aide_timer
+  f_aptget_noexec
   f_aptget_clean
   f_systemddelta
   f_post
   f_checkreboot
-  f_kernel  
-  f_logindconf 
-  f_suid  
-  
-
-  
-  f_disablenet  # COMMENTED: May disable network protocols GUI needs
-  f_disablefs  # COMMENTED: May disable filesystems GUI needs
-  f_disablemod  # COMMENTED: Disables USB, Bluetooth, sound - breaks GUI
-  f_systemdconf  # COMMENTED: Process limits too restrictive for GUI 
-  f_sysctl  # COMMENTED: Network restrictions may break GUI networking
-  f_limitsconf  # COMMENTED: Process limits too restrictive for GUI
-  f_package_install  # COMMENTED: May install conflicting packages
-  f_psad  # COMMENTED: Aggressive intrusion detection may block GUI
-  f_usbguard  # COMMENTED: Blocks USB devices - breaks GUI peripherals
-  f_rkhunter  # COMMENTED: May interfere with GUI file operations
-  f_ctrlaltdel  # COMMENTED: Disables Ctrl+Alt+Del - may confuse GUI users
-  f_aide  # COMMENTED: File integrity checking may interfere with GUI
-  f_users  # COMMENTED: Removes system users that GUI might need
-  f_lockroot  # COMMENTED: Locks root account - may break GUI admin tasks
-  f_package_remove  # COMMENTED: Removes packages that GUI might depend on
-  f_restrictcompilers  # COMMENTED: May break development tools in GUI
-  f_aa_enforce  # COMMENTED: AppArmor enforcement may break GUI applications
-  f_aide_post  # COMMENTED: File integrity checking may interfere with GUI
-  f_aide_timer  # COMMENTED: File integrity checking may interfere with GUI
-  
-  # Confirmed end 
-
-  #Issue start  
-  #f_aptget_configure
-  #f_password  # COMMENTED: Strict password policies prevent password changes
-  #f_fstab  # COMMENTED: Mount restrictions break bootstrap process
-  #Issue end
-
-  #f_auditd  # COMMENTED: Aggressive auditing may slow down GUI
-  # f_aptget_noexec  # COMMENTED: /tmp remount operations fail in EC2 environment
   
 
   echo
