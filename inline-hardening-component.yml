@@ -1,0 +1,83 @@
+name: Ubuntu-Inline-Hardening
+description: Inline Ubuntu security hardening for EC2 Image Builder
+schemaVersion: 1.0
+
+phases:
+  - name: build
+    steps:
+      - name: BasicHardening
+        action: ExecuteBash
+        inputs:
+          commands:
+            - |
+              #!/bin/bash
+              set -e
+              export DEBIAN_FRONTEND=noninteractive
+              
+              echo "Starting inline Ubuntu hardening..."
+              
+              # Update packages
+              apt-get update -y
+              
+              # Install security packages
+              apt-get install -y unattended-upgrades fail2ban ufw
+              
+              # Configure unattended upgrades
+              dpkg-reconfigure -f noninteractive unattended-upgrades
+              
+              # Basic SSH hardening
+              sed -i 's/^#*PermitRootLogin.*/PermitRootLogin no/' /etc/ssh/sshd_config
+              sed -i 's/^#*PubkeyAuthentication.*/PubkeyAuthentication yes/' /etc/ssh/sshd_config
+              
+              # Configure firewall
+              ufw --force reset
+              ufw default deny incoming
+              ufw default allow outgoing
+              ufw allow ssh
+              ufw --force enable
+              
+              # Enable services
+              systemctl enable fail2ban
+              
+              # Basic sysctl hardening
+              cat > /etc/sysctl.d/99-hardening.conf << 'EOF'
+              net.ipv4.ip_forward = 0
+              net.ipv4.conf.all.accept_redirects = 0
+              net.ipv4.conf.default.accept_redirects = 0
+              EOF
+              
+              # Create completion marker
+              echo "$(date): Hardening completed" > /var/log/hardening-complete.flag
+              
+              echo "Hardening completed successfully"
+
+  - name: test
+    steps:
+      - name: ValidateHardening
+        action: ExecuteBash
+        inputs:
+          commands:
+            - |
+              #!/bin/bash
+              echo "Validating hardening..."
+              
+              # Check completion marker
+              if [ ! -f /var/log/hardening-complete.flag ]; then
+                echo "ERROR: Hardening completion marker not found"
+                exit 1
+              fi
+              
+              # Check packages
+              if ! dpkg -l | grep -q fail2ban; then
+                echo "ERROR: fail2ban not installed"
+                exit 1
+              fi
+              
+              # Check SSH config
+              if ! grep -q "PermitRootLogin no" /etc/ssh/sshd_config; then
+                echo "ERROR: SSH root login not disabled"
+                exit 1
+              fi
+              
+              echo "All validations passed!"
+              exit 0

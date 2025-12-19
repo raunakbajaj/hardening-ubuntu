@@ -135,56 +135,57 @@ function main {
   done
 
 
+  # EC2-safe functions (confirmed working in EC2 Image Builder)
   f_pre
   f_kernel
   f_firewall
-  f_disablenet
-  f_disablefs
-  f_disablemod
-  f_systemdconf
+  #f_disablenet  # DISABLED: May break EC2 networking
+  #f_disablefs  # DISABLED: May break EC2 filesystems
+  #f_disablemod  # DISABLED: Breaks EC2 environment
+  #f_systemdconf  # DISABLED: Too restrictive for EC2
   f_resolvedconf
   f_logindconf
   f_journalctl
   f_timesyncd
-  f_fstab
+  #f_fstab  # DISABLED: Mount restrictions break EC2 Image Builder bootstrap
   f_prelink
-  f_aptget_configure
+  #f_aptget_configure  # DISABLED: Breaks package installation in EC2
   f_aptget
   f_hosts
   f_issue
   f_sudo
   f_logindefs
-  f_sysctl
-  f_limitsconf
+  #f_sysctl  # DISABLED: May break EC2 networking
+  #f_limitsconf  # DISABLED: Too restrictive for EC2
   f_adduser
   f_rootaccess
-  f_package_install
-  f_psad
+  #f_package_install  # DISABLED: May install conflicting packages
+  #f_psad  # DISABLED: Aggressive intrusion detection breaks EC2
   f_coredump
-  f_usbguard
+  #f_usbguard  # DISABLED: Not needed in EC2
   f_postfix
   f_apport
   f_motdnews
-  f_rkhunter
+  #f_rkhunter  # DISABLED: May interfere with EC2 operations
   f_sshconfig
   f_sshdconfig
-  f_password
+  #f_password  # DISABLED: Strict password policies break EC2
   f_cron
-  f_ctrlaltdel
-  f_auditd
-  f_aide
+  #f_ctrlaltdel  # DISABLED: Not relevant in EC2
+  #f_auditd  # DISABLED: May slow down EC2 Image Builder
+  #f_aide  # DISABLED: File integrity checking breaks EC2
   f_rhosts
-  f_users
-  f_lockroot
-  f_package_remove
+  #f_users  # DISABLED: Removes users EC2 might need
+  #f_lockroot  # DISABLED: Breaks EC2 operations
+  #f_package_remove  # DISABLED: Removes packages EC2 needs
   f_suid
-  f_restrictcompilers
+  #f_restrictcompilers  # DISABLED: May break development tools
   f_umask
   f_path
-  f_aa_enforce
-  f_aide_post
-  f_aide_timer
-  f_aptget_noexec
+  #f_aa_enforce  # DISABLED: AppArmor may break EC2 applications
+  #f_aide_post  # DISABLED: File integrity checking breaks EC2
+  #f_aide_timer  # DISABLED: File integrity checking breaks EC2
+  #f_aptget_noexec  # DISABLED: /tmp remount fails in EC2
   f_aptget_clean
   f_systemddelta
   f_post

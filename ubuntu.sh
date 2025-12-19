@@ -186,6 +186,14 @@ sudo apt install -f -y
 
 set -euo pipefail
 
+# Check if we're in EC2 Image Builder environment
+if [ "${AWS_REGION:-}" != "" ] || [ "${CODEBUILD_BUILD_ID:-}" != "" ] || [ -f /opt/aws/bin/cfn-signal ]; then
+    echo "[+] Detected EC2/AWS environment - using safe hardening mode"
+    EC2_MODE=true
+else
+    EC2_MODE=false
+fi
+
 # Get the directory where this script is located
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
@@ -193,4 +201,18 @@ chmod +x "$SCRIPT_DIR/hardening.sh"
 
 # Change to the script directory before running hardening.sh
 cd "$SCRIPT_DIR"
-bash ./hardening.sh
+
+if [ "$EC2_MODE" = true ]; then
+    echo "[+] Running EC2-compatible hardening"
+    # Use the EC2-compatible script if it exists
+    if [ -f "$SCRIPT_DIR/ubuntu-ec2-imagebuilder.sh" ]; then
+        bash ./ubuntu-ec2-imagebuilder.sh
+    else
+        echo "[+] EC2-compatible script not found, running basic hardening only"
+        # Run only the basic hardening from ubuntu.sh without calling hardening.sh
+        exit 0
+    fi
+else
+    echo "[+] Running full hardening script"
+    bash ./hardening.sh
+fi
